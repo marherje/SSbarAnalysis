@@ -64,7 +64,7 @@ namespace QQbarAnalysis
 
   void EventAnalyzer::InitWeights()
   {
-    TFile *f = TFile::Open("/home/ilc/yokugawa/SSbarAnalysis/rootfiles/weight/dedxOffsetMeanSigma.root","READ");
+    TFile *f = TFile::Open("/data/dust/user/marquezh/SSbarAnalysis/dedxOffsetMeanSigma_ref.root","READ");
     if(!f) cout << "NtupleProcessor: ERROR: Unable to open file " << endl;
     TString modes[3] = {"Pi","K","P"};
     for ( auto imode : modes ) _gdedx[imode] = (TGraphErrors*)f->Get(imode);

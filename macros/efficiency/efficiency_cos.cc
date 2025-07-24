@@ -11,7 +11,7 @@ using std::vector; using std::unordered_map;
 
 TString prod_mode = "uu";
 TString chiral    = "eL.pR";
-TString LPFO_mode = "Pi";
+TString LPFO_mode = "K";
 // TString LPFO_mode = "K";
 // TString qq[3] = {"uu","dd","ss"};
 TString qq[5] = {"dd","uu","ss","cc","bb"};
@@ -21,13 +21,13 @@ TString qq[5] = {"dd","uu","ss","cc","bb"};
 vector<TString> gen_reco  = {"gen","reco"};
 vector<TString> PFO_mode  = {"K","Pi"};
 // vector<TString> heff_name = {"nocut","momentum", "tpc_hits", "offset", "PID", "SPFO", "charge"};
-vector<TString> heff_name = {"nocut", "btag", "ctag", "nvtx", "momentum", "LPFOacol", "offset", "PID", "SPFO", "charge"};
+vector<TString> heff_name = {"nocut", "momentum", "tpc_hits", "offset", "PID", "SPFO", "charge"};
 
-array<TString,2> chirals   = {"eL.pR", "eR.pL"};
-array<TString,1> processes = {"P2f_z_h"};
+array<TString,2> chirals   = {"eL_pR", "eR_pL"};
+array<TString,1> processes = {"2f_hadronic"};
 
 
-TFile *file = new TFile("../../rootfiles/merged/rv02-02.sv02-02.mILD_l5_o1_v02.E250-SetA.I500010.P2f_z_h.eL.pR.KPiLPFO.dedxPi.PFOp15.LPFOp15_pNaN.all.root","READ");
+TFile *file = new TFile("../../rootfiles/merged/2f_hadronic_eL_pR_merged.root","READ");
 // TFile *file = new TFile("../../rootfiles/merged/rv02-02.sv02-02.mILD_l5_o1_v02.E250-SetA.I500012.P2f_z_h.eR.pL.KPiLPFO.dedxPi.PFOp15.LPFOp15_pNaN.all.root","READ");
 
 unordered_map<pair<TString,TString>,pair<Int_t,Int_t>, hash_pair> production = {
@@ -222,9 +222,43 @@ void calcEff()
 
 
 
+void listFileContents()
+{
+  if (!file || !file->IsOpen()) {
+    cout << "Error: File is not open!" << endl;
+    return;
+  }
+  
+  cout << "=== File contents ===" << endl;
+  file->ls();
+  
+  // Verificar directorios específicos
+  for (auto iqq : qq) {
+    TDirectory *dir = file->GetDirectory(iqq);
+    if (dir) {
+      cout << "Directory " << iqq << " exists" << endl;
+      TDirectory *effDir = dir->GetDirectory("efficiency");
+      if (effDir) {
+        cout << "  efficiency subdirectory exists" << endl;
+        effDir->ls();
+      } else {
+        cout << "  efficiency subdirectory NOT found" << endl;
+      }
+    } else {
+      cout << "Directory " << iqq << " NOT found" << endl;
+    }
+  }
+}
+
 void total()
 {
   TGaxis::SetMaxDigits(3);
+
+  // Verificar que el archivo está abierto
+  if (!file || !file->IsOpen()) {
+    cout << "Error: File is not open!" << endl;
+    return;
+  }
 
   unordered_map< TString, unordered_map< TString, unordered_map< TString, TH1F* > > > h1_cos_eff;  // [GenReco][LPFO][hist]
 
@@ -236,6 +270,13 @@ void total()
           TString dir_name = "/efficiency/";
           TString hname = "h_" + iqq + "_" + igenreco + "_" + i_lmode + "_" + ih;
           TH1F *h = (TH1F*) file->Get(iqq + dir_name + hname);
+          
+          // Verificar si el histograma existe
+          if (!h) {
+            cout << "Warning: Histogram not found: " << iqq + dir_name + hname << endl;
+            continue;
+          }
+          
           if(tmp==0) {
             TH1F *htmp = (TH1F*) h->Clone();
             htmp->SetName("h_" + igenreco + "_" + i_lmode + "_" + ih);
@@ -262,7 +303,21 @@ void total()
 
     TH1F * h_num = h1_cos_eff["reco"][LPFO_mode][ih];
     
+    // Verificar que el histograma existe
+    if (!h_num) {
+      cout << "Warning: Histogram h_num is null for " << ih << endl;
+      continue;
+    }
+    
     if (count) {
+      
+      // Verificar que h_denom también existe
+      if (!h_denom) {
+        cout << "Warning: h_denom is null" << endl;
+        h_denom = h_num;
+        count++;
+        continue;
+      }
       
       TH1F *h_eff = plotEfficiency(h_num, h_denom);
       TString hname = "After " + ih + " selection (Cut " + count + ")";
@@ -300,7 +355,9 @@ void total()
   for ( auto igenreco : gen_reco ){
     for ( auto i_lmode : PFO_mode ){
       for ( auto ih : heff_name ){
-        h1_cos_eff[igenreco][i_lmode][ih]->Write();
+        if (h1_cos_eff[igenreco][i_lmode][ih]) {  // Solo escribir si no es null
+          h1_cos_eff[igenreco][i_lmode][ih]->Write();
+        }
       }
     }
   }
@@ -387,10 +444,13 @@ void partial()
 
 void efficiency_cos()
 {
+  // Primero verificar el contenido del archivo
+  listFileContents();
+  
   // partial();
-  // total();
+  total();
 
-  calcEff();
-  // eff_chiral();
+  //calcEff();
+  //eff_chiral();
 
 }

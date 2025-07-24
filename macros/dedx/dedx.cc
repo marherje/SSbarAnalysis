@@ -15,11 +15,13 @@ TString prod_mode = "ss";
 TString chiral    = "eL.pR";
 TString LPFO_mode = "Pi";
 
-// TString prod_modes[5] = {"dd","uu","ss","cc","bb"};
-TString prod_modes[3] = {"dd","uu","ss"};
+TString prod_modes[5] = {"dd","uu","ss","cc","bb"};
+// TString prod_modes[3] = {"dd","uu","ss"};
+// TString prod_modes[1] = {"ss"};
 
 // TFile *file = new TFile("../../rootfiles/merged/rv02-02.sv02-02.mILD_l5_o1_v02.E250-SetA.I500010.P2f_z_h." + chiral + "." + prod_mode + ".KPiLPFO.dedxPi.PFOp15.LPFOp15_pNaN.tpc0.mix_uds.correctDist.all.root","READ");
-TFile *file = new TFile("../../rootfiles/merged/rv02-02.sv02-02.mILD_l5_o1_v02.E250-SetA.I500010.P2f_z_h.eL.pR.KPiLPFO.dedxPi.PFOp15.LPFOp15_pNaN.all.root","READ");
+// ../../rootfiles/processed/big/2f_hadronic/eL_pR/2f_hadronic_eL_pR_merged.root
+TFile *file = new TFile("/data/dust/user/marquezh/SSbarAnalysis/rootfiles/processed/big/2f_hadronic/eL_pR/2f_hadronic_eL_pR_merged.root","READ");
 
 const vector<TString> PFO_mode  = {"K","Pi"};
 const vector<TString> PFO_type  = {"K","Pi", "p", "e", "mu"};
@@ -92,11 +94,11 @@ void dedxP()
   TCanvas *c_dedx_p_type = new TCanvas("c_dedx_p_type", "c_dedx_p_type", 800,800);
   TPad *pad_dedx_p_type  = new TPad("pad_dedx_p_type", "pad_dedx_p_type",0,0,1,1);
   StylePad(pad_dedx_p_type,0,0.15,0,0.17);
-  TLegend *leg = new TLegend(0.5,0.76,0.75,0.85);
+  TLegend *leg = new TLegend(0.6,0.70,0.75,0.85);
   leg->SetLineColor(0);
   leg->SetFillStyle(0);
   leg->SetMargin(0.8);
-
+  leg->SetTextSize(0.035);
   int count_draw = 0;
   for ( auto itype : PFO_type ){
 
@@ -132,6 +134,8 @@ void dedxP()
   }
 
   leg->Draw();
+  pad_dedx_p_type->SetLogx();
+  c_dedx_p_type->SaveAs("c_dedx_p_type.png");
 
 
 }
@@ -270,6 +274,7 @@ void dedxCos()
 
   }
 
+  c_type_dedx_cos->SaveAs("c_type_dedx_cos.png");
 }
 
 void dedxOffsetProjection()
@@ -338,7 +343,6 @@ void dedxOffsetProjection()
 
   }
 
-
   TCanvas *c_type_dedx_p = new TCanvas("c_type_dedx_p", "c_type_dedx_p", 800,800);
   TPad *pad_type_dedx_p  = new TPad("pad_type_dedx_p", "pad_type_dedx_p",0,0,1,1);
   StylePad(pad_type_dedx_p,0,0.15,0,0.17);
@@ -384,10 +388,11 @@ void dedxOffsetProjection()
   TPad *pad_type_dedx_p_proj  = new TPad("pad_type_dedx_p_proj", "pad_type_dedx_p_proj",0,0,1,1);
   StylePad(pad_type_dedx_p_proj,0,0.15,0,0.17);
 
-  TLegend *leg_dedx_p_proj = new TLegend(0.62,0.67,0.80,0.83);
+  TLegend *leg_dedx_p_proj = new TLegend(0.65,0.67,0.80,0.83);
   leg_dedx_p_proj->SetLineColor(0);
   leg_dedx_p_proj->SetFillStyle(0);
   leg_dedx_p_proj->SetMargin(0.8);
+  leg_dedx_p_proj->SetTextSize(0.035);
 
   count_draw=0;
   for (int i=0; i < h_dedx_p_vec.size(); i++){
@@ -410,7 +415,7 @@ void dedxOffsetProjection()
 
   pad_type_dedx_p_proj->cd();
   leg_dedx_p_proj->Draw();
-
+  c_type_dedx_p_proj->SaveAs("c_type_dedx_p_proj.png");
 }
 
 void dedxOffsetMeanSigma()
@@ -439,8 +444,10 @@ void dedxOffsetMeanSigma()
 
 
     Int_t nbins = h_dedx_cos->GetNbinsX();
-    Float_t tge_cos[nbins], tge_err_cos[nbins];
-    Float_t tge_dedx[nbins], tge_err_dedx[nbins];
+    Float_t *tge_cos = new Float_t[nbins];
+    Float_t *tge_err_cos = new Float_t[nbins];
+    Float_t *tge_dedx = new Float_t[nbins];
+    Float_t *tge_err_dedx = new Float_t[nbins];
     for( int ibin=1; ibin <= nbins; ibin++ ){
       TH1F *h_dedx_cos_proj = (TH1F*) h_dedx_cos->ProjectionY("h_dedx_cos_proj",ibin,ibin);
       TF1 *f_dedx_cos = new TF1("f_dedx_cos","gaus",0.1,0.3);
@@ -461,6 +468,12 @@ void dedxOffsetMeanSigma()
       type_tge[itype]->SetName(itype);
       type_tge[itype]->SetTitle(itype+" dE/dx Projection;cos#theta;dE/dx");
     }
+
+    // Liberar memoria de los arrays
+    delete[] tge_cos;
+    delete[] tge_err_cos;
+    delete[] tge_dedx;
+    delete[] tge_err_dedx;
 
   }
 
@@ -516,14 +529,14 @@ void dedx()
 
   if (!file->IsOpen()) return;
 
-  // getHistograms();
+  //getHistograms();
 
-  // dedxP();
+  //dedxP();
   // dedxDistCosProj();
   // dedxDistCosProjType();
-  // dedxCos();
-  dedxOffsetProjection();
-  // dedxOffsetMeanSigma();
+  //dedxCos();
+  //dedxOffsetProjection();
+  dedxOffsetMeanSigma();
 
 
 }

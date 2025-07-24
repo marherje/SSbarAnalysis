@@ -1,0 +1,12 @@
+# Unix submit description file
+# run_xPROCx_xPOLx_xNFILEx.sub -- simple Marlin job
+
+executable              = run_xPROCx_xPOLx_xNFILEx.sh
+log                     = run_xPROCx_xPOLx_xNFILEx.log
+output                  = outfile_xPROCx_xPOLx_xNFILEx.txt
+error                   = errors_xPROCx_xPOLx_xNFILEx.txt
+should_transfer_files   = Yes
+when_to_transfer_output = ON_EXIT
++MaxRuntime             = 86400
++JobMaxVacateTime       = 60
+queue 1

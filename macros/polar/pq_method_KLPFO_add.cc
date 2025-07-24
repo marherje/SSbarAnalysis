@@ -10,16 +10,16 @@ using std::vector; using std::unordered_map;
 
 TString LPFO_mode = "K";
 // TString ichiral = "eL.pR";
-TString ichiral = "eR.pL";
+TString ichiral = "eL_pR";
 
 TString inputDir = "../../rootfiles/merged/";
-array<TString,2> chirals   = {"eL.pR", "eR.pL"};
+array<TString,2> chirals   = {"eL_pR", "eR_pL"};
 // array<TString,4> processes = {"P2f_z_h", "P4f_ww_h", "P4f_zz_h", "Pqqh"};
-array<TString,1> processes = {"P2f_z_h"};
+array<TString,1> processes = {"2f_hadronic"};
 // array<TString,6> qqbars    = {"dd", "uu", "ss", "cc", "bb", "rr"};
 // array<TString,3> qqbars    = {"dd", "uu", "ss"};
 array<TString,1> qqbars    = {"ss"};
-
+/*
 unordered_map<pair<TString,TString>,pair<Int_t,Int_t>, hash_pair> production = {
     {{"P2f_z_h", "eL.pR"}, {500010,4994}},
     {{"P2f_z_h", "eR.pL"}, {500012,4994}},
@@ -29,6 +29,18 @@ unordered_map<pair<TString,TString>,pair<Int_t,Int_t>, hash_pair> production = {
     {{"P4f_zz_h", "eR.pL"}, {500064,5109}},
     {{"Pqqh", "eL.pR"}, {402011,1457}},
     {{"Pqqh", "eR.pL"}, {402012,2278}},
+};
+*/
+
+unordered_map<pair<TString,TString>,pair<Int_t,Int_t>, hash_pair> production = {
+    {{"2f_hadronic", "eL_pR"}, {500010,4994}},
+    {{"2f_hadronic", "eR_pL"}, {500012,4994}},
+    {{"P4f_ww_h", "eL_pR"}, {500066,4996}},
+    {{"P4f_ww_h", "eR_pL"}, {500068,5116}},
+    {{"P4f_zz_h", "eL_pR"}, {500062,5052}},
+    {{"P4f_zz_h", "eR_pL"}, {500064,5109}},
+    {{"Pqqh", "eL_pR"}, {402011,1457}},
+    {{"Pqqh", "eR_pL"}, {402012,2278}},
 };
 
 Float_t fitRange = 0.8;
@@ -152,9 +164,11 @@ void pq_method_KLPFO_add()
     unordered_map<TString, unordered_map<TString, TFile*> > file_map;
     for( auto process : processes ){
       for( auto chiral : chirals ){
-        Int_t processID = production.at({process,chiral}).first;
-        cout << process << " " << chiral << " " << processID << endl;
-        TString filename = inputDir + "rv02-02.sv02-02.mILD_l5_o1_v02.E250-SetA.I" + processID + "." + process + "." + chiral + ".KPiLPFO.dedxPi.PFOp15.LPFOp15_pNaN.all.root";
+        //Int_t processID = production.at({process,chiral}).first;
+        //cout << process << " " << chiral << " " << processID << endl;
+        //TString filename = inputDir + "rv02-02.sv02-02.mILD_l5_o1_v02.E250-SetA.I" + processID + "." + process + "." + chiral + ".KPiLPFO.dedxPi.PFOp15.LPFOp15_pNaN.all.root";
+        TString filename = inputDir + process + "_" + chiral + "_merged.root";
+        cout << "Opening file: " << filename << endl;
         TFile *file = new TFile(filename,"READ");
         if( !file->IsOpen() ) throw std::runtime_error("File not found");
         file_map[process][chiral] = file;
@@ -168,7 +182,7 @@ void pq_method_KLPFO_add()
     TLegend *legend = new TLegend(0.60,0.75,0.88,0.88);
 
     // Fitting
-    unordered_map<TString, TH1F*> reco_gen_map_fit = main_pq(file_map["P2f_z_h"][ichiral], "ss");
+    unordered_map<TString, TH1F*> reco_gen_map_fit = main_pq(file_map["2f_hadronic"][ichiral], "ss");
     TH1F *h_gen_q_qcos     = (TH1F*) reco_gen_map_fit.at("gen")->Clone();
     TH1F *h_reco_Pi_pq_cos = (TH1F*) reco_gen_map_fit.at("reco")->Clone();
     Normalize(h_gen_q_qcos);

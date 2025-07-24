@@ -19,7 +19,8 @@ TString LPFO_mode = "Pi";
 TString prod_modes[3] = {"dd","uu","ss"};
 
 // TFile *file = new TFile("../../rootfiles/merged/rv02-02.sv02-02.mILD_l5_o1_v02.E250-SetA.I500010.P2f_z_h." + chiral + "." + prod_mode + ".KPiLPFO.dedxPi.PFOp15.LPFOp15_pNaN.tpc0.mix_uds.correctDist.all.root","READ");
-TFile *file = new TFile("../../rootfiles/merged/rv02-02.sv02-02.mILD_l5_o1_v02.E250-SetA.I500010.P2f_z_h.eL.pR.KPiLPFO.dedxPi.PFOp15.LPFOp15_pNaN.all.root","READ");
+//TFile *file = new TFile("../../rootfiles/merged/rv02-02.sv02-02.mILD_l5_o1_v02.E250-SetA.I500010.P2f_z_h.eL.pR.KPiLPFO.dedxPi.PFOp15.LPFOp15_pNaN.all.root","READ");
+TFile *file = new TFile("/data/dust/user/marquezh/SSbarAnalysis/rootfiles/processed/big/2f_hadronic/eL_pR/2f_hadronic_eL_pR_merged.root","READ");
 
 const vector<TString> PFO_mode  = {"Pi","K"};
 const vector<TString> PFO_type  = {"Pi","K", "p", "e", "mu"};
@@ -341,6 +342,9 @@ void dedxPurity()
   g_efficiency_cos->Draw("Psame");
   leg_dedx_cos_purity_efficiency->Draw("same");
 
+  c_type_dedx_p_proj->SaveAs("c_type_dedx_p_sep.png");
+  c_pureff_dedx_p->SaveAs("c_pureff_dedx_p.png");
+  c_pureff_dedx_cos->SaveAs("c_pureff_dedx_cos.png");
 
 }
 
