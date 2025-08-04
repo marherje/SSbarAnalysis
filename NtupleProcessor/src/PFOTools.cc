@@ -342,4 +342,15 @@ namespace QQbarAnalysis
     return 0;
   }
 
+  Bool_t PFOTools::is_acol(PFO_Info pfo1, PFO_Info pfo2, Float_t ACOL_MIN )
+  {
+
+    ROOT::Math::XYZVector v1(pfo1.pfo_px, pfo1.pfo_py, pfo1.pfo_pz);
+    ROOT::Math::XYZVector v2(pfo2.pfo_px, pfo2.pfo_py, pfo2.pfo_pz);
+        
+    // Check if cos between two LPFOs is within the range
+    Float_t cosLPFO = VectorTools::GetCosBetween( v1, v2 );
+    return (cosLPFO < -1.*ACOL_MIN);
+  }
+
 }

@@ -1,8 +1,9 @@
 #!/bin/bash
 
 path=$PWD
+#filelimit=10
 
-for proc in "ZH" "2f_hadronic" "4f_WW_hadronic" "4f_ZZ_hadronic" "ZH"
+for proc in "2f_hadronic" "4f_WW_hadronic" "4f_ZZ_hadronic" "ZH"
 do
     for pol in "eL_pR" "eR_pL"
     do
@@ -65,7 +66,10 @@ do
 				condor_submit run_${proc}_${pol}_${name}.sub
 				sleep 0.1s
 			fi
-			
+			#if [ $i -ge $filelimit ]; then
+			#	echo "File limit reached, stopping submission."
+			#	break
+			#fi
 			i=$((i+1))  # Incrementar contador
 		done
 		

@@ -294,6 +294,18 @@ namespace QQbarAnalysis
     // base
     outMap["nocut"] = true;
 
+    // b-tag
+    outMap["btag"] = _jet.jet_btag[0] < _anCfg.JET_btag_max &&
+                     _jet.jet_btag[1] < _anCfg.JET_btag_max;
+
+    // c-tag
+    outMap["ctag"] = _jet.jet_ctag[0] < _anCfg.JET_ctag_max &&
+                     _jet.jet_ctag[1] < _anCfg.JET_ctag_max;
+    
+    // nvtx
+    outMap["nvtx"] = _jet.jet_nvtx[0] < _anCfg.JET_nvtx_max &&
+                     _jet.jet_nvtx[1] < _anCfg.JET_nvtx_max;
+
     // check momentum
     outMap["momentum"] = pfot.is_momentum( LPFOs.at(0), _anCfg.LPFO_p_min, _anCfg.LPFO_p_max ) &&
                          pfot.is_momentum( LPFOs.at(1), _anCfg.LPFO_p_min, _anCfg.LPFO_p_max );
@@ -301,6 +313,9 @@ namespace QQbarAnalysis
     // check tpc hits
     outMap["tpc_hits"] = pfot.is_tpc_hits( LPFOs.at(0), _anCfg.PFO_TPCHits_min ) &&
                          pfot.is_tpc_hits( LPFOs.at(1), _anCfg.PFO_TPCHits_min );
+
+    // check LPFO acol
+    outMap["LPFO_acol"] = pfot.is_acol( LPFOs.at(0), LPFOs.at(1), _anCfg.LPFO_acol_min );
 
     // check offsets
     outMap["offset"] = pfot.is_offset_small( LPFOs.at(0), _anCfg.PFO_offset_max ) &&
@@ -647,4 +662,6 @@ namespace QQbarAnalysis
     _data.jet_theta_diff = std::abs( jetvt[0].v3().theta() - jetvt[1].v3().theta() );
 
   }
+
+  
 }

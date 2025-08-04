@@ -9,8 +9,8 @@
 using std::cout; using std::endl;
 using std::vector; using std::unordered_map;
 
-TString prod_mode = "uu";
-TString chiral    = "eL.pR";
+TString prod_mode = "ss";
+TString chiral    = "eR.pL";
 TString LPFO_mode = "K";
 // TString LPFO_mode = "K";
 // TString qq[3] = {"uu","dd","ss"};
@@ -21,13 +21,12 @@ TString qq[5] = {"dd","uu","ss","cc","bb"};
 vector<TString> gen_reco  = {"gen","reco"};
 vector<TString> PFO_mode  = {"K","Pi"};
 // vector<TString> heff_name = {"nocut","momentum", "tpc_hits", "offset", "PID", "SPFO", "charge"};
-vector<TString> heff_name = {"nocut", "momentum", "tpc_hits", "offset", "PID", "SPFO", "charge"};
-
+vector<TString> heff_name = {"nocut", "btag", "ctag", "nvtx", "momentum", "LPFO_acol", "offset", "PID", "SPFO", "charge"};
 array<TString,2> chirals   = {"eL_pR", "eR_pL"};
 array<TString,1> processes = {"2f_hadronic"};
 
 
-TFile *file = new TFile("../../rootfiles/merged/2f_hadronic_eL_pR_merged.root","READ");
+TFile *file = new TFile("../../rootfiles/merged/2f_hadronic_eR_pL_merged.root","READ");
 // TFile *file = new TFile("../../rootfiles/merged/rv02-02.sv02-02.mILD_l5_o1_v02.E250-SetA.I500012.P2f_z_h.eR.pL.KPiLPFO.dedxPi.PFOp15.LPFOp15_pNaN.all.root","READ");
 
 unordered_map<pair<TString,TString>,pair<Int_t,Int_t>, hash_pair> production = {
@@ -447,10 +446,10 @@ void efficiency_cos()
   // Primero verificar el contenido del archivo
   listFileContents();
   
-  // partial();
-  total();
+  //partial();
+  //total();
 
-  //calcEff();
+  calcEff();
   //eff_chiral();
 
 }

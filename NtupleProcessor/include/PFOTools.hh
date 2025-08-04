@@ -56,6 +56,7 @@ namespace QQbarAnalysis
       virtual Bool_t           is_tpc_hits           ( PFO_Info iPFO, Int_t MIN_TPC_HITS );
       virtual Bool_t           is_offset_small       ( PFO_Info iPFO, Int_t MAX_OFFSET );
       virtual Bool_t           is_dEdxdist_bad       ( Float_t e_dist, Float_t mu_dist, Float_t pi_dist, Float_t k_dist, Float_t p_dist );
+      virtual Bool_t           is_acol               ( PFO_Info pfo1, PFO_Info pfo2, Float_t ACOL_MIN );
 
     // MC gen info
       MC_Info    mc_quark[2];

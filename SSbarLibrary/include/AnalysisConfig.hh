@@ -29,6 +29,10 @@ class AnalysisConfig
     // int gen_quark;
     std::vector<int> gen_quarks;
 
+  // Jet cuts
+    float JET_btag_max;
+    float JET_ctag_max;
+    float JET_nvtx_max;
   // PFO cuts
     int   PFO_TPCHits_min;
     float PFO_p_min;
@@ -38,6 +42,7 @@ class AnalysisConfig
   // LPFO cuts
     float LPFO_p_min;
     float LPFO_p_max;
+    float LPFO_acol_min;
 
   protected:
     template <typename T>

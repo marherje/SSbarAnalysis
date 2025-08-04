@@ -10,7 +10,6 @@
 #include <TMath.h>
 #include <Math/Vector3D.h>
 #include <Math/Vector4D.h>
-
 class VectorTools
 {
   
