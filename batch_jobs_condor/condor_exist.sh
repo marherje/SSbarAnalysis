@@ -3,11 +3,11 @@
 path=$PWD
 #filelimit=10
 
-for proc in "2f_hadronic" "4f_WW_hadronic" "4f_ZZ_hadronic" "ZH"
+for proc in "2f_hadronic" "4f_WW_hadronic" "4f_ZZ_hadronic" "ZH_hadronic"
 do
     for pol in "eL_pR" "eR_pL"
     do
-		folder_name="/data/dust/user/marquezh/QQbarAnalysis2025/scripts/2025_QQbar/NTuples/Big/${proc}/${pol}"
+		folder_name="/data/dust/user/marquezh/QQbar250_NTuples/Standard/Big/${proc}/${pol}"
 		ssbarfolder="/data/dust/user/marquezh/SSbarAnalysis/"
 		if [ ! -d "$ssbarfolder/rootfiles/processed/big/$proc" ]; then
 			mkdir -p $ssbarfolder/rootfiles/processed/big/$proc
